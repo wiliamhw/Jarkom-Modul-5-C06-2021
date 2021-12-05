@@ -252,7 +252,7 @@ Berikut langkah-langkah untuk mengkonfigurasi DHCP Relay:
         ```
     3. Guanhao
         ```
-        INTERFACES="eth0 eth1 eth2"
+        INTERFACES="eth0 eth1 eth3"
         SERVERS="10.17.1.11"
         ```
 3. Jalankan atau restart DHCP Relay dengan perintah `service isc-dhcp-relay restart`.
