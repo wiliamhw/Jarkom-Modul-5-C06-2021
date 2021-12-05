@@ -223,27 +223,39 @@ Berikut langkah-langkah untuk mengkonfigurasi DHCP Server pada Jipangu:
        option broadcast-address 10.17.6.255;
        option domain-name-servers 10.17.1.10;                   
     }
-    
+
     # Doriki dan Jipangu
     subnet 10.17.1.8 netmask 255.255.255.248 {
     }
-    
+
     # Jorge dan Maingate
     subnet 10.17.5.8 netmask 255.255.255.248 {
     }
     " > /etc/dhcp/dhcpd.conf;
-    
+
     service isc-dhcp-server restart
     ```
 
-### Konfigurasi DHCP Relay (Water7, Guanhao)
-Berikut langkah-langkah untuk mengkonfigurasi DHCP Server pada Water7 dan Guanhao:
+### Konfigurasi DHCP Relay (Water7, Guanhao, Foosha)
+Berikut langkah-langkah untuk mengkonfigurasi DHCP Relay:
 1. Install DHCP Relay dengan command `apt-get update` dan `apt-get install isc-dhcp-relay`.
-2. Edit file `/etc/default/isc-dhcp-relay` dengan:
-    1. menambahkan `eth2` pada bagian **INTERFACES**.
-    2. menambahkan IP Jipangu, yaitu `10.17.1.11` pada bagian **SERVERS**.  
-    ![Konfigurasi DHCP Relay](https://user-images.githubusercontent.com/52129348/144751784-0e964686-f989-4eb6-a53e-ad1f8cb5fe35.png)
-3. Jalankan atau restart DHCP Relay dengan perintah `service isc-dhcp-relay restart	`.
+2. Edit file `/etc/default/isc-dhcp-relay` pada:
+    1. Water7
+        ```
+        INTERFACES="eth0 eth1 eth2 eth3"
+        SERVERS="10.17.1.11"
+        ```
+    2. Foosha
+        ```
+        INTERFACES="eth1 eth2"
+        SERVERS="10.17.1.11"
+        ```
+    3. Guanhao
+        ```
+        INTERFACES="eth0 eth1 eth2"
+        SERVERS="10.17.1.11"
+        ```
+3. Jalankan atau restart DHCP Relay dengan perintah `service isc-dhcp-relay restart`.
 
 ### Konfigurasi DHCP Client (Blueno, Cipher, Fukurou, Elena)
 Pada file `/etc/network/interfaces`. komen IP Statis pada `eth0` dan ubah `eth0` menjadi seperti berikut:  
