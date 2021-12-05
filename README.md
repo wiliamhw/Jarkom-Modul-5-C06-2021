@@ -188,8 +188,8 @@ Berikut langkah-langkah untuk mengkonfigurasi DHCP Server pada Jipangu:
     echo "
     # Default setting
     ddns-update-style none;
-    default-lease-time 600;
     log-facility local7;
+    default-lease-time 600;
     max-lease-time 7200;
 
     # Blueno
@@ -197,9 +197,7 @@ Berikut langkah-langkah untuk mengkonfigurasi DHCP Server pada Jipangu:
        range 10.17.0.2 10.17.0.126;
        option routers 10.17.0.1;
        option broadcast-address 10.17.0.127;
-       option domain-name-servers 10.17.1.10;
-       default-lease-time 600;                 
-       max-lease-time 7200;                    
+       option domain-name-servers 10.17.1.10;           
     }
 
     # Cipher
@@ -207,9 +205,7 @@ Berikut langkah-langkah untuk mengkonfigurasi DHCP Server pada Jipangu:
        range 10.17.0.130 10.17.0.254;
        option routers 10.17.0.129;
        option broadcast-address 10.17.0.255;
-       option domain-name-servers 10.17.1.10;
-       default-lease-time 600;                 
-       max-lease-time 7200;                    
+       option domain-name-servers 10.17.1.10;                 
     }
 
     # Elena
@@ -217,9 +213,7 @@ Berikut langkah-langkah untuk mengkonfigurasi DHCP Server pada Jipangu:
        range 10.17.4.2 10.17.5.254;
        option routers 10.17.4.1;
        option broadcast-address 10.17.5.255;
-       option domain-name-servers 10.17.1.10;
-       default-lease-time 600;                 
-       max-lease-time 7200;                    
+       option domain-name-servers 10.17.1.10;                  
     }
 
     # Fukurou
@@ -227,11 +221,13 @@ Berikut langkah-langkah untuk mengkonfigurasi DHCP Server pada Jipangu:
        range 10.17.6.2 10.17.6.254;
        option routers 10.17.6.1;
        option broadcast-address 10.17.6.255;
-       option domain-name-servers 10.17.1.10;
-       default-lease-time 600;                 
-       max-lease-time 7200;                    
+       option domain-name-servers 10.17.1.10;                   
     }
-
+    
+    # Doriki dan Jipangu
+    subnet 10.17.1.8 netmask 255.255.255.248 {
+    }
+    
     # Jorge dan Maingate
     subnet 10.17.5.8 netmask 255.255.255.248 {
     }
@@ -244,9 +240,9 @@ Berikut langkah-langkah untuk mengkonfigurasi DHCP Server pada Jipangu:
 Berikut langkah-langkah untuk mengkonfigurasi DHCP Server pada Water7 dan Guanhao:
 1. Install DHCP Relay dengan command `apt-get update` dan `apt-get install isc-dhcp-relay`.
 2. Edit file `/etc/default/isc-dhcp-relay` dengan:
-    1. menambahkan `eth1` dan `eth3`  pada bagian **INTERFACES**.
+    1. menambahkan `eth2` pada bagian **INTERFACES**.
     2. menambahkan IP Jipangu, yaitu `10.17.1.11` pada bagian **SERVERS**.  
-    ![Konfig DHCP Relay](https://user-images.githubusercontent.com/52129348/144750309-c49e93bb-bd6e-458d-abb7-517521e762a6.png)
+    ![Konfigurasi DHCP Relay](https://user-images.githubusercontent.com/52129348/144751784-0e964686-f989-4eb6-a53e-ad1f8cb5fe35.png)
 3. Jalankan atau restart DHCP Relay dengan perintah `service isc-dhcp-relay restart	`.
 
 ### Konfigurasi DHCP Client (Blueno, Cipher, Fukurou, Elena)
