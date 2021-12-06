@@ -26,7 +26,7 @@ iface eth1 inet static
 # Static config for eth2
 auto eth2
 iface eth2 inet static
-	address 10.17.5.1
+	address 10.17.4.1
 	netmask 255.255.255.252
 ```
 
@@ -62,25 +62,25 @@ iface eth3 inet static
 # Static config for eth0
 auto eth0
 iface eth0 inet static
-	address 10.17.5.2
+	address 10.17.4.2
 	netmask 255.255.255.252
     
 # Static config for eth1
 auto eth1
 iface eth1 inet static
-	address 10.17.4.1
+	address 10.17.6.1
 	netmask 255.255.254.0
     
 # Static config for eth2
 auto eth2
 iface eth2 inet static
-	address 10.17.5.9
+	address 10.17.4.9
 	netmask 255.255.255.248
     
 # Static config for eth3
 auto eth3
 iface eth3 inet static
-	address 10.17.6.1
+	address 10.17.5.1
 	netmask 255.255.255.0
 ```
 
@@ -109,9 +109,9 @@ iface eth0 inet static
 # Static config for eth0
 auto eth0
 iface eth0 inet static
-	address 10.17.5.11
+	address 10.17.4.11
 	netmask 255.255.255.252
-	gateway 10.17.5.9
+	gateway 10.17.4.9
 ```
 
 ### Jorge (Web Server)
@@ -119,9 +119,9 @@ iface eth0 inet static
 # Static config for eth0
 auto eth0
 iface eth0 inet static
-	address 10.17.5.10
+	address 10.17.4.10
 	netmask 255.255.255.252
-	gateway 10.17.5.9
+	gateway 10.17.4.9
 ```
 
 ### Blueno (Client dengan 100 host)
@@ -148,9 +148,9 @@ iface eth0 inet static
 ```
 auto eth0
 iface eth0 inet static
-	address 10.17.4.2
+	address 10.17.6.2
 	netmask 255.255.254.0
-	gateway 10.17.4.1
+	gateway 10.17.6.1
 ```
 
 ### Fukurou (Client dengan 200 host)
@@ -158,16 +158,16 @@ iface eth0 inet static
 # Static config for eth0
 auto eth0
 iface eth0 inet static
-	address 10.17.6.2
+	address 10.17.5.2
 	netmask 255.255.255.0
-	gateway 10.17.6.1
+	gateway 10.17.5.1
 ```
 
 ## C. Routing (CIDR)
 Berdasarkan topologi pada soal A, karena menggunakan teknik subneting CIDR, maka routing yang diperlukan lebih sederhana. Routing hanya perlu dilakukan di node Foosha seperti berikut:
 ```
 route add -net 10.17.0.0 netmask 255.255.254.0 gw 10.17.1.2
-route add -net 10.17.4.0 netmask 255.255.252.0 gw 10.17.5.2
+route add -net 10.17.4.0 netmask 255.255.252.0 gw 10.17.4.2
 ```
 
 ## D. DHCP Server-Relay
@@ -209,18 +209,18 @@ Berikut langkah-langkah untuk mengkonfigurasi DHCP Server pada Jipangu:
     }
 
     # Elena
-    subnet 10.17.4.0 netmask 255.255.254.0 {
-       range 10.17.4.2 10.17.5.254;
-       option routers 10.17.4.1;
-       option broadcast-address 10.17.5.255;
+    subnet 10.17.6.0 netmask 255.255.254.0 {
+       range 10.17.6.2 10.17.7.254;
+       option routers 10.17.6.1;
+       option broadcast-address 10.17.7.255;
        option domain-name-servers 10.17.1.10;                  
     }
 
     # Fukurou
-    subnet 10.17.6.0 netmask 255.255.255.0 {
-       range 10.17.6.2 10.17.6.254;
-       option routers 10.17.6.1;
-       option broadcast-address 10.17.6.255;
+    subnet 10.17.5.0 netmask 255.255.255.0 {
+       range 10.17.5.2 10.17.5.254;
+       option routers 10.17.5.1;
+       option broadcast-address 10.17.5.255;
        option domain-name-servers 10.17.1.10;                   
     }
 
@@ -229,7 +229,7 @@ Berikut langkah-langkah untuk mengkonfigurasi DHCP Server pada Jipangu:
     }
 
     # Jorge dan Maingate
-    subnet 10.17.5.8 netmask 255.255.255.248 {
+    subnet 10.17.4.8 netmask 255.255.255.248 {
     }
     " > /etc/dhcp/dhcpd.conf;
 
