@@ -265,3 +265,114 @@ iface eth0 inet dhcp
 ```
 ![Konfigurasi DHCP Client](https://user-images.githubusercontent.com/52129348/144750471-f3fb643a-8fc1-4323-a31e-29fd590d2ec1.png)
 
+## 1. Agar topologi yang kalian buat dapat mengakses keluar, kalian diminta untuk mengkonfigurasi Foosha menggunakan iptables, tetapi Luffy tidak ingin menggunakan MASQUERADE.
+Pada **Foosha**, tuliskan perintah:  
+```
+iptables -t nat -A POSTROUTING -s 10.17.0.0/16 -o eth0 -j SNAT --to-source <ip DHCP di Foosha>
+```
+
+## 2. Kalian diminta untuk mendrop semua akses HTTP dari luar Topologi kalian pada server yang memiliki ip DHCP dan DNS Server demi menjaga keamanan.
+Pada **Foosha**, lakukan langkah-langkah berikut:
+1. Untuk drop koneksi HTTP dari luar pada **Blueno** dan **Cipher**, masukan:  
+    ```
+    iptables -A FORWARD -d 10.17.0.0/24 -p tcp --dport 80 -i eth0 -j DROP
+    ```
+2. Untuk drop koneksi HTTP dari luar pada **Elena** dan **Fukurou**, masukan:  
+    ```
+    iptables -A FORWARD -d 10.17.6.0/23 -p tcp --dport 80 -i eth0 -j DROP
+    iptables -A FORWARD -d 10.17.5.0/24 -p tcp --dport 80 -i eth0 -j DROP
+    ```
+3. Untuk drop koneksi HTTP dari luar pada **Doriki** (DNS Server), masukan:  
+    ```
+    iptables -A FORWARD -d 10.17.1.0 -p tcp --dport 80 -i eth0 -j DROP
+    ```  
+
+Ketiga langkah di atas dapat digabung menjadi sebuah perintah, yaitu:  
+```
+iptables -A FORWARD -d 10.17.0.0/24,10.17.6.0/23,10.17.5.0/24,10.17.1.0 -p tcp --dport 80 -i eth0 -j DROP
+```
+
+## 3. Karena kelompok kalian maksimal terdiri dari 3 orang. Luffy meminta kalian untuk membatasi DHCP dan DNS Server hanya boleh menerima maksimal 3 koneksi ICMP secara bersamaan menggunakan iptables, selebihnya didrop.
+Pada **Jipangu** (DHCP Server) dan **Doriki** (DNS Server), tuliskan perintah berikut:  
+```
+iptables -A INPUT -p icmp -m connlimit --connlimit-above 3 --connlimit-mask 0 -j DROP
+```
+
+## 4. Akses dari subnet Blueno dan Cipher hanya diperbolehkan pada pukul 07.00 - 15.00 pada hari Senin sampai Kamis.
+Pada **Water7**, tulis perintah ini:  
+```
+iptables -A FORWARD -s 10.17.0.0/24 -m time --timestart 07:00 --timestop 15:00 --weekdays Mon,Tue,Wed,Thu -j ACCEPT
+iptables -A FORWARD -s 10.17.0.0/24 -j REJECT
+```
+
+## 5. Akses dari subnet Elena dan Fukuro hanya diperbolehkan pada pukul 15.01 hingga pukul 06.59 setiap harinya.
+Pada **Guanhao**, tulis perintah ini:  
+```
+iptables -A FORWARD -s 10.17.6.0/23,10.17.5.0/24 -m time --timestart 15:01 --timestop 23:59 -j ACCEPT
+iptables -A FORWARD -s 10.17.6.0/23,10.17.5.0/24 -m time --timestart 00:00 --timestop 06:59 -j ACCEPT
+iptables -A FORWARD -s 10.17.6.0/23,10.17.5.0/24 -j REJECT
+```
+
+## 6. Karena kita memiliki 2 Web Server, Luffy ingin Guanhao disetting sehingga setiap request dari client yang mengakses DNS Server akan didistribusikan secara bergantian pada Jorge dan Maingate.
+Pada **Guanhao**, tulis perintah berikut:
+```
+iptables -t nat -A PREROUTING -d 10.17.4.8 -m statistic --mode nth --every 2 --packet 0 -j DNAT --to-destination 10.17.4.10
+iptables -t nat -A PREROUTING -d 10.17.4.8 -j DNAT --to-destination 10.17.4.11
+iptables -t nat -A POSTROUTING -d 10.17.4.10,10.17.4.11 -j SNAT --to-source 10.17.4.8
+```  
+
+Pada **Jorge** dan **Maingate** yang merupakan Web Server, install apache2 dengan perintah:
+```
+apt-get update
+apt-get install apache2
+```
+
+Pada DNS Server, yaitu **Doriki**, install bind9 dengan perintah:
+```
+apt-get update
+apt-get install bind9
+```
+Setelah itu, edit `/etc/bind/named.conf.local` dengan domain `jarkomC06.com` seperti berikut:
+```
+zone "jarkomC06.com" {
+    type master;
+    file "/etc/bind/jarkom/jarkomC06.com";
+};
+```
+Kemudian, buat folder baru dengan perintah `mkdir /etc/bind/jarkom` dan pindahkan `db.local` ke folder yang baru saja dibuat dengan nama `jarkomC06.com`. Langkah tersebut dapat dilakukan dengan perintah `cp /etc/bind/db.local /etc/bind/jarkom/jarkomC06.com`. Kemudian, edit file `jarkomC06.com` tersebut sehingga pointer A menjadi IP `10.17.4.8` dan nama domain, nameserver, serta CNAME menjadi `jarkomC06.com`. Setelah itu, restart bind9 dengan perintah `service bind9 restart`.  
+
+Langkah-langkah di atas bisa dijalnkan melalui script berikut:
+```
+# Daftarkan domain name baru
+echo "
+zone \"jarkomC06.com\" {
+        type master;
+        file \"/etc/bind/jarkom/jarkomC06.com\";
+};
+" > /etc/bind/named.conf.local
+
+# Buat folder jarkom dan file yang menyimpan konfigurasi DNS
+[ ! -d "/etc/bind/jarkom" ] && mkdir /etc/bind/jarkom
+cp /etc/bind/db.local /etc/bind/jarkom/jarkomC06.com
+
+# Buat konfigurasi DNS
+echo "
+;
+; BIND data file for local loopback interface
+;
+\$TTL    604800
+@       IN      SOA     jarkomC06.com. root.jarkomC06.com. (
+                     2021100401         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+@       IN      NS      jarkomC06.com.
+@       IN      A       10.17.4.8
+www     IN      CNAME   jarkomC06.com.
+" > /etc/bind/jarkom/jarkomC06.com
+
+# Restart bind9
+service bind9 restart
+```
