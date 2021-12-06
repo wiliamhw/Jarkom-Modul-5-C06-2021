@@ -269,7 +269,9 @@ iface eth0 inet dhcp
 Pada **Foosha**, tuliskan perintah:  
 ```
 iptables -t nat -A POSTROUTING -s 10.17.0.0/16 -o eth0 -j SNAT --to-source <ip DHCP di Foosha>
-```
+```  
+![Bukti no.1](https://user-images.githubusercontent.com/52129348/144869323-725871ac-1efe-493f-a8ef-d1be3be40b7c.gif)
+
 
 ## 2. Kalian diminta untuk mendrop semua akses HTTP dari luar Topologi kalian pada server yang memiliki ip DHCP dan DNS Server demi menjaga keamanan.
 Pada **Foosha**, lakukan langkah-langkah berikut:
@@ -296,7 +298,8 @@ iptables -A FORWARD -d 10.17.0.0/24,10.17.6.0/23,10.17.5.0/24,10.17.1.0 -p tcp -
 Pada **Jipangu** (DHCP Server) dan **Doriki** (DNS Server), tuliskan perintah berikut:  
 ```
 iptables -A INPUT -p icmp -m connlimit --connlimit-above 3 --connlimit-mask 0 -j DROP
-```
+```  
+![Bukti no.3](https://user-images.githubusercontent.com/52129348/144869506-a34e4b8e-fc8b-44c6-9a03-adfa3f1f7010.gif)
 
 ## 4. Akses dari subnet Blueno dan Cipher hanya diperbolehkan pada pukul 07.00 - 15.00 pada hari Senin sampai Kamis.
 Pada **Water7**, tulis perintah ini:  
