@@ -9,7 +9,12 @@
 ![Topologi Jaringan](https://user-images.githubusercontent.com/52129348/144748505-68a8193c-c485-4b07-9787-bae9b98ce504.png)
 
 ## B. Subnetting (CIDR)
-Berikut ini adalah pengaturan IP pada file `/etc/network/interfaces` untuk masing-masing nodes pada UML:
+![topologi1](https://user-images.githubusercontent.com/52129348/144882291-c6ca2a3b-6fe6-469b-aefc-b4dd583c4f3b.png)  
+![topologi2](https://user-images.githubusercontent.com/52129348/144882313-75bb7be0-38ea-4605-a42e-842c535674d2.png)  
+![topologi3](https://user-images.githubusercontent.com/52129348/144882322-75ed958b-6e8b-4290-8357-a8305d607ee0.png)  
+![Pohon IP](https://user-images.githubusercontent.com/52129348/144882353-74ae71aa-3280-4a2b-8688-fb583233c6a3.jpg)  
+
+Subnetting akan dilakukan menggunakan teknik CIDR seperti pada gambar di atas. Kemudian, karena setiap subnet sudah mendapatkan pembagian IP, berikut ini adalah pengaturan IP pada file `/etc/network/interfaces` untuk masing-masing nodes pada topologi:
 
 ### Foosha (Router sekaligus DHCP Relay)
 ```
@@ -274,6 +279,8 @@ iptables -t nat -A POSTROUTING -s 10.17.0.0/16 -o eth0 -j SNAT --to-source <ip D
 
 
 ## 2. Kalian diminta untuk mendrop semua akses HTTP dari luar Topologi kalian pada server yang memiliki ip DHCP dan DNS Server demi menjaga keamanan.
+> Jawaban masih mengikuti soal yang lama  
+
 Pada **Foosha**, lakukan langkah-langkah berikut:
 1. Untuk drop koneksi HTTP dari luar pada **Blueno** dan **Cipher**, masukan:  
     ```
