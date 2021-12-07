@@ -278,28 +278,11 @@ iptables -t nat -A POSTROUTING -s 10.17.0.0/16 -o eth0 -j SNAT --to-source <ip D
 ![Bukti no.1](https://user-images.githubusercontent.com/52129348/144869323-725871ac-1efe-493f-a8ef-d1be3be40b7c.gif)
 
 
-## 2. Kalian diminta untuk mendrop semua akses HTTP dari luar Topologi kalian pada server yang memiliki ip DHCP dan DNS Server demi menjaga keamanan.
-> Jawaban masih mengikuti soal yang lama  
-
-Pada **Foosha**, lakukan langkah-langkah berikut:
-1. Untuk drop koneksi HTTP dari luar pada **Blueno** dan **Cipher**, masukan:  
-    ```
-    iptables -A FORWARD -d 10.17.0.0/24 -p tcp --dport 80 -i eth0 -j DROP
-    ```
-2. Untuk drop koneksi HTTP dari luar pada **Elena** dan **Fukurou**, masukan:  
-    ```
-    iptables -A FORWARD -d 10.17.6.0/23 -p tcp --dport 80 -i eth0 -j DROP
-    iptables -A FORWARD -d 10.17.5.0/24 -p tcp --dport 80 -i eth0 -j DROP
-    ```
-3. Untuk drop koneksi HTTP dari luar pada **Doriki** (DNS Server), masukan:  
-    ```
-    iptables -A FORWARD -d 10.17.1.0 -p tcp --dport 80 -i eth0 -j DROP
-    ```  
-
-Ketiga langkah di atas dapat digabung menjadi sebuah perintah, yaitu:  
+## 2. Kalian diminta untuk mendrop semua akses HTTP dari luar Topologi kalian pada server yang merupakan DHCP Server dan DNS Server demi menjaga keamanan.
+Pada **Foosha**, tuliskan perintah berikut:  
 ```
-iptables -A FORWARD -d 10.17.0.0/24,10.17.6.0/23,10.17.5.0/24,10.17.1.0 -p tcp --dport 80 -i eth0 -j DROP
-```
+iptables -A FORWARD -d 10.17.1.8/29 -p tcp --dport 80 -i eth0 -j DROP
+```  
 
 ## 3. Karena kelompok kalian maksimal terdiri dari 3 orang. Luffy meminta kalian untuk membatasi DHCP dan DNS Server hanya boleh menerima maksimal 3 koneksi ICMP secara bersamaan menggunakan iptables, selebihnya didrop.
 Pada **Jipangu** (DHCP Server) dan **Doriki** (DNS Server), tuliskan perintah berikut:  
