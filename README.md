@@ -334,7 +334,7 @@ zone "jarkomC06.com" {
 ```
 Kemudian, buat folder baru dengan perintah `mkdir /etc/bind/jarkom` dan pindahkan `db.local` ke folder yang baru saja dibuat dengan nama `jarkomC06.com`. Langkah tersebut dapat dilakukan dengan perintah `cp /etc/bind/db.local /etc/bind/jarkom/jarkomC06.com`. Kemudian, edit file `jarkomC06.com` tersebut sehingga pointer A menjadi IP `10.17.4.8` dan nama domain, nameserver, serta CNAME menjadi `jarkomC06.com`. Setelah itu, restart bind9 dengan perintah `service bind9 restart`.  
 
-Langkah-langkah di atas bisa dijalnkan melalui script berikut:
+Langkah-langkah di atas bisa dijalankan melalui script berikut:
 ```
 # Daftarkan domain name baru
 echo "
@@ -369,3 +369,6 @@ www     IN      CNAME   jarkomC06.com.
 # Restart bind9
 service bind9 restart
 ```
+
+## Kendala
+GNS yand dibuat di Ubuntu tidak bisa diexport ke Windows.
