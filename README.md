@@ -309,9 +309,8 @@ iptables -A FORWARD -s 10.17.6.0/23,10.17.5.0/24 -j REJECT
 ## 6. Karena kita memiliki 2 Web Server, Luffy ingin Guanhao disetting sehingga setiap request dari client yang mengakses DNS Server akan didistribusikan secara bergantian pada Jorge dan Maingate.
 Pada **Guanhao**, tulis perintah berikut:
 ```
-iptables -t nat -A PREROUTING -d 10.17.4.8 -m statistic --mode nth --every 2 --packet 0 -j DNAT --to-destination 10.17.4.10
-iptables -t nat -A PREROUTING -d 10.17.4.8 -j DNAT --to-destination 10.17.4.11
-iptables -t nat -A POSTROUTING -d 10.17.4.10,10.17.4.11 -j SNAT --to-source 10.17.4.8
+iptables -t nat -A PREROUTING -d 10.17.4.8 -p tcp --dport 80 -m statistic --mode nth --every 2 --packet 0 -j DNAT --to-destination 10.17.4.10
+iptables -t nat -A PREROUTING -d 10.17.4.8 -p tcp --dport 80 -j DNAT --to-destination 10.17.4.11
 ```  
 
 Pada **Jorge** dan **Maingate** yang merupakan Web Server, install apache2 dengan perintah:
@@ -368,7 +367,12 @@ www     IN      CNAME   jarkomC06.com.
 
 # Restart bind9
 service bind9 restart
-```
+```  
+
+Untuk melakukan pengecekan, pada **Jorge** dan **Maingate**, install netcat dengan perintah `apt-get update` dan `apt-get install netcat`. 
+Selanjutnya, masih pada **Jorge** dan **Maingate**, tuliskan `nc -l -p 80`. Setelah konfigurasi pada Web Server selesai, install netcat dengan perintah di atas pada client. Berikutnya, jalankan perintah `nc jarkomC06.com 80` dan ketikkan sembarang kata. Kata tersebut kemudian akan muncul pada **Jorge** dan **Maingate** secara bergantian.  
+
+![Bukti no.6](https://user-images.githubusercontent.com/52129348/145028270-f46c5e0c-a101-4113-98c7-a3f8ef38103a.gif)  
 
 ## Kendala
 GNS yand dibuat di Ubuntu tidak bisa diexport ke Windows.
