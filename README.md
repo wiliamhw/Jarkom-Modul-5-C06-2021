@@ -376,3 +376,8 @@ Selanjutnya, masih pada **Jorge** dan **Maingate**, tuliskan `nc -l -p 80`. Sete
 
 ## Kendala
 GNS yand dibuat di Ubuntu tidak bisa diexport ke Windows.
+Sudah coba vmware untuk import dari linux ke windows tetap error
+
+![error import gns](https://user-images.githubusercontent.com/55136116/145414651-d820432c-db5c-405b-8894-c97cdb395468.jpg)
+
+
