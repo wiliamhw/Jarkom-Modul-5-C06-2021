@@ -281,7 +281,7 @@ iptables -t nat -A POSTROUTING -s 10.17.0.0/16 -o eth0 -j SNAT --to-source <ip D
 ## 2. Kalian diminta untuk mendrop semua akses HTTP dari luar Topologi kalian pada server yang merupakan DHCP Server dan DNS Server demi menjaga keamanan.
 Pada **Foosha**, tuliskan perintah berikut:  
 ```
-iptables -A FORWARD -d 10.17.1.8/29 -p tcp --dport 80 -i eth0 -j DROP
+iptables -A FORWARD -d 10.17.1.8/29 -p tcp --sport 80 -i eth0 -j DROP
 ```  
 
 ## 3. Karena kelompok kalian maksimal terdiri dari 3 orang. Luffy meminta kalian untuk membatasi DHCP dan DNS Server hanya boleh menerima maksimal 3 koneksi ICMP secara bersamaan menggunakan iptables, selebihnya didrop.
